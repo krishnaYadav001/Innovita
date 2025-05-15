@@ -1,7 +1,8 @@
 import { getDatabases, Query } from "@/libs/AppWriteClient" // Use getter function
 import useGetProfileByUserId from "./useGetProfileByUserId";
+import { PostWithProfile } from "../types"; // Import PostWithProfile
 
-const useGetAllPosts = async () => {
+const useGetAllPosts = async (): Promise<PostWithProfile[]> => {
     try {
         // Check if required environment variables are set
         if (!process.env.NEXT_PUBLIC_DATABASE_ID || !process.env.NEXT_PUBLIC_COLLECTION_ID_POST) {
@@ -62,7 +63,7 @@ const useGetAllPosts = async () => {
             });
 
             // Filter out null values (invalid documents)
-            const results = (await Promise.all(objPromises)).filter(post => post !== null);
+            const results = (await Promise.all(objPromises)).filter(post => post !== null) as PostWithProfile[];
             return results;
         } catch (dbError) {
             console.error('Database error when fetching posts:', dbError);
