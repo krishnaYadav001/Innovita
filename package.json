@@ -43,10 +43,12 @@
   },
   "devDependencies": {
     "@types/debounce": "^1.2.1",
-    "canvas": "^2.11.2",
     "dotenv": "^16.4.7",
     "encoding": "^0.1.13",
     "node-appwrite": "^15.0.1",
     "raw-loader": "^4.0.2"
+  },
+  "optionalDependencies": {
+    "canvas": "^2.11.2"
   }
 }
