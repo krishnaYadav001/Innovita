@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getAccount, ID } from '@/libs/AppWriteClient';
 import { useUser } from '@/app/context/user';
+import { useGeneralStore } from '@/app/stores/general';
 import useCreateProfile from '@/app/hooks/useCreateProfile';
 import MainLayout from '@/app/layouts/MainLayout';
 import { BiLoaderCircle } from 'react-icons/bi';
@@ -14,6 +15,7 @@ export default function GoogleCallback() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const contextUser = useUser();
+  const { setIsLoginOpen } = useGeneralStore();
   const code = searchParams.get('code');
 
   useEffect(() => {
@@ -64,6 +66,9 @@ export default function GoogleCallback() {
         if (contextUser) {
           await contextUser.checkUser();
         }
+
+        // Close the login modal
+        setIsLoginOpen(false);
 
         // Redirect to home page
         router.push('https://innovita-ten.vercel.app/');

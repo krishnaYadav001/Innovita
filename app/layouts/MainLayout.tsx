@@ -3,10 +3,12 @@ import React from "react";
 import SideNavMain from "@/app/layouts/includes/SideNavMain"; // Use path alias
 import TopNav from "./includes/TopNav";
 import { useGeneralStore } from "@/app/stores/general";
+import { useUser } from "@/app/context/user";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
-    const { isSidebarExpanded, isMobileView, toggleSidebar } = useGeneralStore()
-const { setIsMobileView, setIsSidebarExpanded } = useGeneralStore();
+    const { isSidebarExpanded, isMobileView, toggleSidebar, isLoginOpen, setIsLoginOpen } = useGeneralStore();
+    const { setIsMobileView, setIsSidebarExpanded } = useGeneralStore();
+    const contextUser = useUser();
 
     useEffect(() => {
         const handleResize = () => {
@@ -28,6 +30,13 @@ const { setIsMobileView, setIsSidebarExpanded } = useGeneralStore();
             window.removeEventListener('resize', handleResize);
         };
     }, [setIsMobileView, setIsSidebarExpanded]); // Dependencies ensure the functions are stable
+
+    // Close login modal if user is logged in
+    useEffect(() => {
+        if (contextUser?.user && isLoginOpen) {
+            setIsLoginOpen(false);
+        }
+    }, [contextUser?.user, isLoginOpen, setIsLoginOpen]);
 
     return (
       	<>

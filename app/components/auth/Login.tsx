@@ -71,6 +71,8 @@ export default function Login() {
     const handleGithubLogin = async () => {
         try {
             setLoading(true);
+            // Close the login modal before redirecting
+            setIsLoginOpen(false);
             // Use AppWrite's OAuth2 session creation with specific success URL
             await getAccount().createOAuth2Session( // Use getter
                 'github',
@@ -83,12 +85,16 @@ export default function Login() {
             console.error('GitHub OAuth error:', error);
             alert('Failed to authenticate with GitHub. Please try again.');
             setLoading(false);
+            // Re-open the login modal if there was an error
+            setIsLoginOpen(true);
         }
     };
 
     const handleGoogleOAuthLogin = async () => {
         try {
             setLoading(true);
+            // Close the login modal before redirecting
+            setIsLoginOpen(false);
             // Use AppWrite's OAuth2 session creation with specific success URL
             await getAccount().createOAuth2Session( // Use getter
                 'google',
@@ -101,6 +107,8 @@ export default function Login() {
             console.error('Google OAuth error:', error);
             alert('Failed to authenticate with Google. Please try again.');
             setLoading(false);
+            // Re-open the login modal if there was an error
+            setIsLoginOpen(true);
         }
     };
 
