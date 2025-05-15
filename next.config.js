@@ -1,33 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     webpack: (config, { isServer }) => {
-        // Add a rule to handle the canvas.node binary module
+        // Add a rule to handle any .node binary modules
         config.module.rules.push({ test: /\.node$/, use: 'raw-loader' });
 
-        // Exclude canvas from being processed by Next.js in the browser
+        // Add canvas to the list of modules to ignore
         if (!isServer) {
-            config.externals = [...(config.externals || []), 'canvas'];
-        }
-
-        // Ignore canvas in the server build as well to prevent build issues
-        if (isServer) {
-            const originalEntry = config.entry;
-            config.entry = async () => {
-                const entries = await originalEntry();
-                // Prevent canvas from being included in the server bundle
-                if (entries['pages/_app']) {
-                    entries['pages/_app'] = entries['pages/_app'].filter(
-                        (entry) => !entry.includes('canvas')
-                    );
-                }
-                return entries;
+            config.resolve.alias = {
+                ...config.resolve.alias,
+                canvas: false,
             };
         }
 
         return config;
-    },
-    // Add this to tell Next.js to transpile the canvas module
-    transpilePackages: ['canvas'],
+    }
 }
 
 module.exports = nextConfig

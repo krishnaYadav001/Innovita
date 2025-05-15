@@ -47,8 +47,5 @@
     "encoding": "^0.1.13",
     "node-appwrite": "^15.0.1",
     "raw-loader": "^4.0.2"
-  },
-  "optionalDependencies": {
-    "canvas": "^2.11.2"
   }
 }
