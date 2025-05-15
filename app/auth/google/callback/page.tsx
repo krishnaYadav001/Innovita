@@ -66,7 +66,7 @@ export default function GoogleCallback() {
         }
 
         // Redirect to home page
-        router.push('/');
+        router.push('https://innovita-ten.vercel.app/');
       } catch (err) {
         console.error('Google OAuth error:', err);
         setError('Failed to authenticate with Google. Please try again.');

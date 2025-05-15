@@ -74,8 +74,8 @@ export default function Login() {
             // Use AppWrite's OAuth2 session creation with specific success URL
             await getAccount().createOAuth2Session( // Use getter
                 'github',
-                window.location.origin + '/', // Redirect to home page after successful authentication
-                window.location.origin + '/login-failed' // Failure redirect URL
+                'https://innovita-ten.vercel.app/', // Redirect to home page after successful authentication
+                'https://innovita-ten.vercel.app/login-failed' // Failure redirect URL
             );
             // Note: The above function will redirect the browser, so the code below won't execute
             // unless there's an error that's caught
@@ -92,8 +92,8 @@ export default function Login() {
             // Use AppWrite's OAuth2 session creation with specific success URL
             await getAccount().createOAuth2Session( // Use getter
                 'google',
-                window.location.origin + '/', // Redirect to home page after successful authentication
-                window.location.origin + '/login-failed' // Failure redirect URL
+                'https://innovita-ten.vercel.app/', // Redirect to home page after successful authentication
+                'https://innovita-ten.vercel.app/login-failed' // Failure redirect URL
             );
             // Note: The above function will redirect the browser, so the code below won't execute
             // unless there's an error that's caught
