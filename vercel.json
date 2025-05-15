@@ -2,12 +2,18 @@
   "builds": [
     {
       "src": "package.json",
-      "use": "@vercel/next"
+      "use": "@vercel/next",
+      "config": {
+        "installCommand": "npm install --no-optional --ignore-scripts",
+        "buildCommand": "npm run prebuild && npm run build"
+      }
     }
   ],
   "build": {
     "env": {
-      "NODE_VERSION": "18.x"
+      "NODE_VERSION": "18.x",
+      "SKIP_CANVAS_INSTALL": "true",
+      "CANVAS_SKIP_INSTALL": "true"
     }
   },
   "env": {

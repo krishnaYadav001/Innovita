@@ -1,0 +1,20 @@
+diff --git a/node_modules/image-js/lib/image.js b/node_modules/image-js/lib/image.js
+index 1234567..abcdef0 100644
+--- a/node_modules/image-js/lib/image.js
++++ b/node_modules/image-js/lib/image.js
+@@ -1,7 +1,13 @@
+ 'use strict';
+ 
+-// Try to load Canvas package
+-let Canvas = null;
++// Mock Canvas package
++const Canvas = {
++  createCanvas: function(width, height) {
++    return {
++      getContext: () => ({})
++    };
++  }
++};
+ 
+ const loadFromCanvas = require('./load/canvas');
+ const loadURL = require('./load/url');

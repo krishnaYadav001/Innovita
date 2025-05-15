@@ -11,7 +11,7 @@ import { CropperDimensions, ShowErrorObject } from "@/app/types";
 import { useProfileStore } from "@/app/stores/profile";
 import { useGeneralStore } from "@/app/stores/general";
 import useUpdateProfile from "@/app/hooks/useUpdateProfile";
-import useChangeUserImage from "@/app/hooks/useChangeUserImage";
+import useChangeUserImageNoCanvas from "@/app/hooks/useChangeUserImageNoCanvas";
 import useUpdateProfileImage from "@/app/hooks/useUpdateProfileImage";
 import useCreateBucketUrl from "@/app/hooks/useCreateBucketUrl";
 
@@ -77,7 +77,7 @@ export default function EditProfileOverlay() {
             if (!cropper) return alert('You have no file')
             setIsUpdating(true)
 
-            const newImageId = await useChangeUserImage(file, cropper, userImage)
+            const newImageId = await useChangeUserImageNoCanvas(file, cropper, userImage)
             await useUpdateProfileImage(currentProfile?.id || '', newImageId)
 
             await contextUser.checkUser()

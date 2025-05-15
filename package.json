@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/prevent-canvas.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -12,7 +13,8 @@
     "fix-specific-product": "node scripts/fix-specific-product.js",
     "create-clear-storage": "node scripts/clear-local-storage.js",
     "check-appwrite": "node scripts/check-appwrite-config.js",
-    "migrate-data": "node scripts/migrate-data.js"
+    "migrate-data": "node scripts/migrate-data.js",
+    "postinstall": "echo 'Skipping patch-package to avoid canvas dependency'"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.0",
