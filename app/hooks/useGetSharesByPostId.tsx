@@ -1,15 +1,30 @@
-import { getDatabase, Query } from "@/libs/AppWriteClient";
+/**
+ * Mock implementation of useGetSharesByPostId that uses localStorage
+ * This is a temporary solution until a proper shares collection is created in Appwrite
+ */
 
 const useGetSharesByPostId = async (postId: string): Promise<number> => {
   try {
-    // Get shares for a specific post
-    const response = await getDatabase().listDocuments(
-      String(process.env.NEXT_PUBLIC_DATABASE_ID),
-      String(process.env.NEXT_PUBLIC_SHARES_COLLECTION_ID),
-      [Query.equal("post_id", postId)]
-    );
+    // Only run in browser environment
+    if (typeof window === 'undefined') {
+      return 0;
+    }
 
-    return response.documents.length;
+    // Get shares from localStorage
+    const sharesKey = `innovita_shares_${postId}`;
+    const sharesData = localStorage.getItem(sharesKey);
+
+    if (!sharesData) {
+      return 0;
+    }
+
+    try {
+      const shares = JSON.parse(sharesData);
+      return Array.isArray(shares) ? shares.length : 0;
+    } catch (parseError) {
+      console.error("Error parsing shares data:", parseError);
+      return 0;
+    }
   } catch (error) {
     console.error("Error in useGetSharesByPostId:", error);
     return 0;

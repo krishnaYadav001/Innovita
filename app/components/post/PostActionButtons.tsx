@@ -56,6 +56,21 @@ export default function PostActionButtons({ post, layout = 'vertical' }: PostAct
         fetchShareCount()
     }, [post])
 
+    // Add an effect to refresh share count when localStorage changes
+    useEffect(() => {
+        // Only run in browser environment
+        if (typeof window === 'undefined') return;
+
+        const handleStorageChange = (e: StorageEvent) => {
+            if (e.key && e.key.startsWith('innovita_shares_') && post?.id && e.key.includes(post.id)) {
+                fetchShareCount();
+            }
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange);
+    }, [post?.id]);
+
     useEffect(() => { hasUserLikedPost() }, [likes, contextUser])
 
     const getAllCommentsByPost = async () => {

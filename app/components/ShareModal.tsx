@@ -3,6 +3,7 @@ import { FaTwitter, FaFacebook, FaWhatsapp, FaLinkedin, FaEnvelope, FaCopy, FaTi
 import { shareToTwitter, shareToFacebook, shareToWhatsApp, shareToLinkedIn, shareViaEmail, copyToClipboard } from '../utils/shareUtils';
 import { useUser } from '../context/user';
 import { motion } from 'framer-motion';
+import useSharePost from '../hooks/useSharePost';
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -16,33 +17,38 @@ export default function ShareModal({ isOpen, onClose, postId, postTitle = 'Check
   const [copied, setCopied] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
   const contextUser = useUser();
-  
+
   if (!isOpen) return null;
-  
+
   const postUrl = `${window.location.origin}/post/${postId}`;
-  
+
   const handleShare = async (platform: string) => {
     setIsSharing(true);
-    
+
     try {
-      // Record the share in the database
+      // Record the share using our localStorage implementation
       if (contextUser?.user?.id) {
-        const response = await fetch('/api/shares', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId: contextUser.user.id,
-            postId: postId,
-          }),
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to record share');
+        try {
+          // Use the hook directly for client-side storage
+          await useSharePost(contextUser.user.id, postId);
+
+          // Also call the API to maintain server-side counts
+          await fetch('/api/shares', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userId: contextUser.user.id,
+              postId: postId,
+            }),
+          });
+        } catch (shareError) {
+          console.error('Error recording share:', shareError);
+          // Continue with sharing even if recording fails
         }
       }
-      
+
       // Share to the selected platform
       switch (platform) {
         case 'twitter':
@@ -66,7 +72,7 @@ export default function ShareModal({ isOpen, onClose, postId, postTitle = 'Check
           setTimeout(() => setCopied(false), 3000);
           break;
       }
-      
+
       if (onShare) onShare(true);
     } catch (error) {
       console.error('Error sharing post:', error);
@@ -75,7 +81,7 @@ export default function ShareModal({ isOpen, onClose, postId, postTitle = 'Check
       setIsSharing(false);
     }
   };
-  
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -97,9 +103,9 @@ export default function ShareModal({ isOpen, onClose, postId, postTitle = 'Check
         >
           <FaTimes size={20} />
         </button>
-        
+
         <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Share this post</h2>
-        
+
         <div className="grid grid-cols-3 gap-4 mb-6">
           <button
             onClick={() => handleShare('twitter')}
@@ -109,7 +115,7 @@ export default function ShareModal({ isOpen, onClose, postId, postTitle = 'Check
             <FaTwitter size={24} className="text-[#1DA1F2]" />
             <span className="mt-2 text-xs text-gray-700 dark:text-gray-300">Twitter</span>
           </button>
-          
+
           <button
             onClick={() => handleShare('facebook')}
             disabled={isSharing}
@@ -118,7 +124,7 @@ export default function ShareModal({ isOpen, onClose, postId, postTitle = 'Check
             <FaFacebook size={24} className="text-[#4267B2]" />
             <span className="mt-2 text-xs text-gray-700 dark:text-gray-300">Facebook</span>
           </button>
-          
+
           <button
             onClick={() => handleShare('whatsapp')}
             disabled={isSharing}
@@ -127,7 +133,7 @@ export default function ShareModal({ isOpen, onClose, postId, postTitle = 'Check
             <FaWhatsapp size={24} className="text-[#25D366]" />
             <span className="mt-2 text-xs text-gray-700 dark:text-gray-300">WhatsApp</span>
           </button>
-          
+
           <button
             onClick={() => handleShare('linkedin')}
             disabled={isSharing}
@@ -136,7 +142,7 @@ export default function ShareModal({ isOpen, onClose, postId, postTitle = 'Check
             <FaLinkedin size={24} className="text-[#0077B5]" />
             <span className="mt-2 text-xs text-gray-700 dark:text-gray-300">LinkedIn</span>
           </button>
-          
+
           <button
             onClick={() => handleShare('email')}
             disabled={isSharing}
@@ -145,7 +151,7 @@ export default function ShareModal({ isOpen, onClose, postId, postTitle = 'Check
             <FaEnvelope size={24} className="text-gray-600 dark:text-gray-300" />
             <span className="mt-2 text-xs text-gray-700 dark:text-gray-300">Email</span>
           </button>
-          
+
           <button
             onClick={() => handleShare('copy')}
             disabled={isSharing}
@@ -161,7 +167,7 @@ export default function ShareModal({ isOpen, onClose, postId, postTitle = 'Check
             </span>
           </button>
         </div>
-        
+
         <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
           <p className="text-sm text-gray-700 dark:text-gray-300 break-all">{postUrl}</p>
         </div>
