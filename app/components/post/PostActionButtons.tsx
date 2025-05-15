@@ -263,6 +263,7 @@ export default function PostActionButtons({ post, layout = 'vertical' }: PostAct
                     isOpen={isShareModalOpen}
                     onClose={() => setIsShareModalOpen(false)}
                     postId={post.id}
+                    userId={post?.profile?.user_id}
                     postTitle={post?.text || 'Check out this post on Innovita!'}
                     onShare={handleShareComplete}
                 />

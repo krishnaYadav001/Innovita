@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3001",
+    "start:3002": "next start -p 3002",
+    "start:3003": "next start -p 3003",
     "lint": "next lint",
     "init-data": "node scripts/init-data.js",
     "fix-posts": "node scripts/fix-posts.js",

@@ -9,18 +9,33 @@ interface ShareModalProps {
   isOpen: boolean;
   onClose: () => void;
   postId: string;
+  userId?: string;
   postTitle?: string;
   onShare?: (success: boolean) => void;
 }
 
-export default function ShareModal({ isOpen, onClose, postId, postTitle = 'Check out this post on Innovita!', onShare }: ShareModalProps) {
+export default function ShareModal({ isOpen, onClose, postId, userId, postTitle = 'Check out this post on Innovita!', onShare }: ShareModalProps) {
   const [copied, setCopied] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
   const contextUser = useUser();
 
   if (!isOpen) return null;
 
-  const postUrl = `${window.location.origin}/post/${postId}`;
+  // If userId is not provided as a prop, try to extract it from the current URL
+  let finalUserId = userId;
+
+  if (!finalUserId) {
+    const currentUrl = window.location.pathname;
+    const postUrlMatch = currentUrl.match(/\/post\/([^\/]+)\/([^\/]+)/);
+    if (postUrlMatch && postUrlMatch[2]) {
+      finalUserId = postUrlMatch[2];
+    }
+  }
+
+  // Create the correct post URL with both postId and userId if available
+  const postUrl = finalUserId
+    ? `${window.location.origin}/post/${postId}/${finalUserId}`
+    : `${window.location.origin}/post/${postId}`;
 
   const handleShare = async (platform: string) => {
     setIsSharing(true);
