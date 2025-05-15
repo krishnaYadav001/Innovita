@@ -1,60 +1,89 @@
-// This script modifies package-lock.json to remove canvas dependencies
+// This script aggressively removes canvas and image-js dependencies
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 console.log('Running prevent-canvas script...');
 
 try {
-  // Check if package-lock.json exists
+  // Create a more aggressive .npmrc file
+  const npmrcPath = path.join(process.cwd(), '.npmrc');
+  const npmrcContent = `
+# Prevent canvas installation
+canvas=false
+node-canvas=false
+image-js=false
+ignore-scripts=true
+optional=false
+fund=false
+audit=false
+`;
+
+  fs.writeFileSync(npmrcPath, npmrcContent);
+  console.log('Created .npmrc file to prevent canvas installation');
+
+  // Create a node_modules/.hooks directory if it doesn't exist
+  const hooksDir = path.join(process.cwd(), 'node_modules', '.hooks');
+  if (!fs.existsSync(hooksDir)) {
+    fs.mkdirSync(hooksDir, { recursive: true });
+  }
+
+  // Create a preinstall hook to prevent canvas installation
+  const preinstallHookPath = path.join(hooksDir, 'preinstall');
+  const preinstallHookContent = `#!/bin/sh
+echo "Preventing canvas installation"
+exit 0
+`;
+
+  fs.writeFileSync(preinstallHookPath, preinstallHookContent);
+  fs.chmodSync(preinstallHookPath, '755');
+  console.log('Created preinstall hook to prevent canvas installation');
+
+  // Check if package-lock.json exists and remove problematic dependencies
   const packageLockPath = path.join(process.cwd(), 'package-lock.json');
   if (fs.existsSync(packageLockPath)) {
-    console.log('Found package-lock.json, removing canvas dependencies...');
-    
-    // Read the package-lock.json file
-    const packageLock = JSON.parse(fs.readFileSync(packageLockPath, 'utf8'));
-    
-    // Remove canvas from dependencies
-    if (packageLock.packages) {
-      const keysToDelete = [];
-      
-      // Find all canvas-related packages
-      for (const key in packageLock.packages) {
-        if (key.includes('canvas') || 
-            key.includes('node-canvas') || 
-            key.includes('@mapbox/node-pre-gyp')) {
-          keysToDelete.push(key);
+    console.log('Found package-lock.json, removing problematic dependencies...');
+
+    try {
+      // Read the package-lock.json file
+      const packageLock = JSON.parse(fs.readFileSync(packageLockPath, 'utf8'));
+
+      // Remove problematic dependencies
+      if (packageLock.packages) {
+        const problematicKeywords = [
+          'canvas', 'node-canvas', '@mapbox/node-pre-gyp', 'image-js',
+          'node-gyp', 'gyp', 'pre-gyp', 'nan'
+        ];
+
+        const keysToDelete = [];
+
+        // Find all problematic packages
+        for (const key in packageLock.packages) {
+          if (problematicKeywords.some(keyword => key.includes(keyword))) {
+            keysToDelete.push(key);
+          }
         }
+
+        // Delete the found packages
+        keysToDelete.forEach(key => {
+          console.log(`Removing ${key} from package-lock.json`);
+          delete packageLock.packages[key];
+        });
+
+        // Write the modified package-lock.json back to disk
+        fs.writeFileSync(packageLockPath, JSON.stringify(packageLock, null, 2));
+        console.log('Successfully removed problematic dependencies from package-lock.json');
       }
-      
-      // Delete the found packages
-      keysToDelete.forEach(key => {
-        console.log(`Removing ${key} from package-lock.json`);
-        delete packageLock.packages[key];
-      });
-      
-      // Write the modified package-lock.json back to disk
-      fs.writeFileSync(packageLockPath, JSON.stringify(packageLock, null, 2));
-      console.log('Successfully removed canvas dependencies from package-lock.json');
+    } catch (lockError) {
+      console.error('Error processing package-lock.json:', lockError);
+      // Continue even if there's an error with package-lock.json
     }
   } else {
     console.log('package-lock.json not found, skipping');
   }
-  
-  // Create a .npmrc file to prevent canvas installation
-  const npmrcPath = path.join(process.cwd(), '.npmrc');
-  const npmrcContent = `
-canvas=false
-node-canvas=false
-ignore-scripts=true
-optional=false
-`;
-  
-  fs.writeFileSync(npmrcPath, npmrcContent);
-  console.log('Created .npmrc file to prevent canvas installation');
-  
+
+  console.log('prevent-canvas script completed successfully');
 } catch (error) {
   console.error('Error in prevent-canvas script:', error);
   process.exit(1);
 }
-
-console.log('prevent-canvas script completed successfully');

@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "prebuild": "node scripts/prevent-canvas.js",
-    "build": "next build",
+    "build": "node scripts/vercel-build.js",
+    "build:next": "next build",
     "start": "next start",
     "lint": "next lint",
     "init-data": "node scripts/init-data.js",
@@ -14,7 +15,7 @@
     "create-clear-storage": "node scripts/clear-local-storage.js",
     "check-appwrite": "node scripts/check-appwrite-config.js",
     "migrate-data": "node scripts/migrate-data.js",
-    "postinstall": "echo 'Skipping patch-package to avoid canvas dependency'"
+    "postinstall": "node scripts/prevent-canvas.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.0",
@@ -28,7 +29,6 @@
     "autoprefixer": "10.4.15",
     "debounce": "^1.2.1",
     "framer-motion": "^12.6.3",
-    "image-js": "^0.35.4",
     "jwt-decode": "^4.0.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
