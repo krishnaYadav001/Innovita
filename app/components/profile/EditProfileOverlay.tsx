@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
-// Removed cropper dependency
+import { Cropper } from 'react-advanced-cropper';
+import 'react-advanced-cropper/dist/style.css'
 import TextInput from "../TextInput";
 import { BsPencil } from "react-icons/bs";
 import { AiOutlineClose } from "react-icons/ai";
@@ -10,7 +11,7 @@ import { CropperDimensions, ShowErrorObject } from "@/app/types";
 import { useProfileStore } from "@/app/stores/profile";
 import { useGeneralStore } from "@/app/stores/general";
 import useUpdateProfile from "@/app/hooks/useUpdateProfile";
-import useSimpleImageUpload from "@/app/hooks/useSimpleImageUpload";
+import useChangeUserImage from "@/app/hooks/useChangeUserImage";
 import useUpdateProfileImage from "@/app/hooks/useUpdateProfileImage";
 import useCreateBucketUrl from "@/app/hooks/useCreateBucketUrl";
 
@@ -23,7 +24,7 @@ export default function EditProfileOverlay() {
     const router = useRouter()
 
     const [file, setFile] = useState<File | null>(null);
-    // Removed cropper state
+    const [cropper, setCropper] = useState<CropperDimensions | null>(null);
     const [uploadedImage, setUploadedImage] = useState<string | null>(null);
     const [userImage, setUserImage] = useState<string | ''>('');
     const [userName, setUserName] = useState<string | ''>('');
@@ -66,17 +67,17 @@ export default function EditProfileOverlay() {
         }
     }
 
-    const uploadAndUpdateImage = async () => {
+    const cropAndUpdateImage = async () => {
         let isError = validate()
         if (isError) return
         if (!contextUser?.user) return
 
         try {
             if (!file) return alert('You have no file')
+            if (!cropper) return alert('You have no file')
             setIsUpdating(true)
 
-            // Simply upload the file without cropping
-            const newImageId = await useSimpleImageUpload(file, userImage)
+            const newImageId = await useChangeUserImage(file, cropper, userImage)
             await useUpdateProfileImage(currentProfile?.id || '', newImageId)
 
             await contextUser.checkUser()
@@ -226,15 +227,13 @@ export default function EditProfileOverlay() {
                                 </div>
                             </div>
                         ) : (
-                            <div className="w-full max-h-[420px] mx-auto bg-black dark:bg-gray-800">
-                                <div className="flex flex-col items-center justify-center h-[400px]">
-                                    <img
-                                        src={uploadedImage || ''}
-                                        alt="Preview"
-                                        className="max-h-[380px] max-w-full object-contain"
-                                    />
-                                    <p className="text-white text-sm mt-2">Preview of your profile image</p>
-                                </div>
+                            <div className="w-full max-h-[420px] mx-auto bg-black dark:bg-gray-800 circle-stencil">
+                                <Cropper
+                                    stencilProps={{ aspectRatio: 1 }}
+                                    className="h-[400px]"
+                                    onChange={(cropper) => setCropper(cropper.getCoordinates())}
+                                    src={uploadedImage}
+                                />
                             </div>
                         )}
 
@@ -278,11 +277,11 @@ export default function EditProfileOverlay() {
                                 </button>
 
                                 <button
-                                    onClick={() => uploadAndUpdateImage()}
+                                    onClick={() => cropAndUpdateImage()}
                                     className="flex items-center bg-[#F02C56] text-white border rounded-md ml-3 px-3 py-[6px]"
                                 >
                                     <span className="mx-4 font-medium text-[15px]">
-                                        {isUpdating ? <BiLoaderCircle color="#ffffff" className="my-1 mx-2.5 animate-spin" /> : "Upload" }
+                                        {isUpdating ? <BiLoaderCircle color="#ffffff" className="my-1 mx-2.5 animate-spin" /> : "Apply" }
                                     </span>
                                 </button>
 
