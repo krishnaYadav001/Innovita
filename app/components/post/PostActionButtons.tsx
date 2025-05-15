@@ -6,6 +6,10 @@ import Tooltip from "../Tooltip"
 const RichTextPreviewButton = dynamic(() => import("../RichTextPreviewButton"), {
   ssr: false,
 });
+// Dynamically import ShareModal with no SSR
+const ShareModal = dynamic(() => import("../ShareModal"), {
+  ssr: false,
+});
 import { useEffect, useState } from "react"
 import { useUser } from "../../context/user" // Adjusted path
 import { useGeneralStore } from "../../stores/general" // Adjusted path
@@ -18,6 +22,7 @@ import useCreateLike from "../../hooks/useCreateLike" // Adjusted path
 import useDeleteLike from "../../hooks/useDeleteLike" // Adjusted path
 import useCreateRichText from "../../hooks/useCreateRichText" // Adjusted path
 import useGetRichTextByPostId from "../../hooks/useGetRichTextByPostId" // Adjusted path
+import useGetSharesByPostId from "../../hooks/useGetSharesByPostId" // Added import
 // Dynamically import EditorModal with no SSR
 const EditorModal = dynamic(() => import("../EditorModal"), {
   ssr: false,
@@ -39,6 +44,7 @@ export default function PostActionButtons({ post, layout = 'vertical' }: PostAct
     const [comments, setComments] = useState<Comment[]>([])
     const [likes, setLikes] = useState<Like[]>([])
     const [isEditorOpen, setIsEditorOpen] = useState<boolean>(false)
+    const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false)
     const [isSaving, setIsSaving] = useState<boolean>(false)
     const [richTextContent, setRichTextContent] = useState<string | undefined>(undefined)
     const [shareCount, setShareCount] = useState<number>(0)
@@ -126,18 +132,28 @@ export default function PostActionButtons({ post, layout = 'vertical' }: PostAct
 
     const fetchShareCount = async () => {
         if (!post?.id) return; // Added check
-        // Replace with actual API call to fetch share count
         try {
-            // Assuming API route exists at /api/shares
-            const response = await fetch(`/api/shares?postId=${post.id}`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            setShareCount(data.count || 0); // Ensure count is a number
+            // Use the hook to get share count
+            const count = await useGetSharesByPostId(post.id);
+            setShareCount(count);
         } catch (error) {
             console.error("Error fetching share count:", error);
             setShareCount(0); // Default to 0 on error
+        }
+    }
+
+    const handleShareClick = () => {
+        if (!contextUser?.user?.id) {
+            setIsLoginOpen(true);
+            return;
+        }
+        setIsShareModalOpen(true);
+    }
+
+    const handleShareComplete = (success: boolean) => {
+        if (success) {
+            // Refresh share count after successful share
+            fetchShareCount();
         }
     }
 
@@ -191,7 +207,10 @@ export default function PostActionButtons({ post, layout = 'vertical' }: PostAct
 
                 <div className={`flex ${layout === 'vertical' ? 'flex-col' : 'flex-row'} items-center ${layout === 'horizontal' ? 'gap-2' : ''}`}>
                     <Tooltip text="Share">
-                        <button className={`flex ${layout === 'vertical' ? 'flex-col' : 'flex-row'} items-center`}>
+                        <button
+                            onClick={handleShareClick}
+                            className={`flex ${layout === 'vertical' ? 'flex-col' : 'flex-row'} items-center`}
+                        >
                             <div className="rounded-full bg-gray-900 bg-opacity-70 p-3 cursor-pointer hover:bg-opacity-90 transition-opacity duration-200">
                                 <FaShare size="22" className="text-white"/>
                             </div>
@@ -221,6 +240,16 @@ export default function PostActionButtons({ post, layout = 'vertical' }: PostAct
                     currentUser={contextUser.user.id}
                     contentOwner={post?.profile?.user_id}
                     isAuthor={contextUser?.user?.id === post?.profile?.user_id}
+                />
+            )}
+
+            {isShareModalOpen && post?.id && (
+                <ShareModal
+                    isOpen={isShareModalOpen}
+                    onClose={() => setIsShareModalOpen(false)}
+                    postId={post.id}
+                    postTitle={post?.text || 'Check out this post on Innovita!'}
+                    onShare={handleShareComplete}
                 />
             )}
         </>
