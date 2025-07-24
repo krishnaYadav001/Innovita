@@ -90,6 +90,13 @@ export default function SideNavMain() {
                             sizeString="25"
                         />
                     </NavLink>
+                    <NavLink href="/saved">
+                        <MenuItem
+                            iconString="Saved"
+                            colorClass={pathname == '/saved' ? activeColorClass : inactiveColorClass}
+                            sizeString="25"
+                        />
+                    </NavLink>
 
                     <div className="border-b border-gray-300 dark:border-gray-700 lg:ml-2 mt-2" />
                     <h3 className={`${isSidebarExpanded ? 'block' : 'hidden'} text-xs text-gray-600 dark:text-gray-400 font-semibold pt-4 pb-2 px-2`}>Suggested accounts</h3>

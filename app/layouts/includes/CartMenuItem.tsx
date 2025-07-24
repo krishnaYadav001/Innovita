@@ -17,9 +17,9 @@ export default function CartMenuItem({ colorClass, sizeString = "25" }: CartMenu
   const iconSize = isMobileView ? (parseInt(sizeString) - 2).toString() : sizeString;
 
   return (
-    <div className={`w-full flex items-center hover:bg-gray-100 dark:hover:bg-gray-800 ${isMobileView ? 'p-3' : 'p-2.5'} rounded-md relative`}>
+    <div className={`w-full flex items-center hover:bg-gray-100 dark:hover:bg-gray-800 ${isMobileView ? 'p-3' : 'p-2.5'} rounded-md relative group`}>
       <div className={`flex items-center ${isSidebarExpanded ? 'mx-0' : 'mx-auto'}`}>
-        <div className="relative">
+        <div className="relative transition-transform duration-300 group-hover:scale-110">
           <BsCart3 size={iconSize} className={colorClass || 'text-black dark:text-white'} />
           
           {/* Cart item count badge */}

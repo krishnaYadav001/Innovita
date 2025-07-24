@@ -76,6 +76,7 @@ export interface Post {
     created_at: string;
     tagged_products?: Product[]; // Added this line
     primary_product_id?: string | null; // Added for single linked product
+    views?: number;
 }
 
 export interface PostWithProfile {
@@ -92,6 +93,7 @@ export interface PostWithProfile {
     };
         tagged_products?: Product[]; // Keep for potential future use? Or remove if only primary matters now.
         primary_product_id?: string | null; // Added for single linked product
+    views?: number;
 }
 
 export interface CommentWithProfile {

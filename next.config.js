@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     webpack: (config, { isServer }) => {
+        config.externals.push('canvas');
         // Add a rule to handle any .node binary modules
         config.module.rules.push({ test: /\.node$/, use: 'raw-loader' });
 
@@ -13,6 +14,9 @@ const nextConfig = {
         }
 
         return config;
+    },
+    images: {
+        domains: ['lh3.googleusercontent.com', 'firebasestorage.googleapis.com'],
     }
 }
 

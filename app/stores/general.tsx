@@ -24,6 +24,8 @@ interface GeneralStore {
     setPopularUsers: () => void,
     setFollowingUsers: (userId: string) => void,
     setShowAllUsers: (val: boolean) => void,
+    previousPath: string,
+    setPreviousPath: (path: string) => void,
 }
 
 export const useGeneralStore = create<GeneralStore>()(
@@ -39,9 +41,11 @@ export const useGeneralStore = create<GeneralStore>()(
                 allPopularUsers: [],
                 followingUsers: [],
                 showAllUsers: false,
-
+                previousPath: '',
+            
                 setIsLoginOpen: (val: boolean) => set({ isLoginOpen: val }),
                 setIsEditProfileOpen: (val: boolean) => set({ isEditProfileOpen: val }),
+                setPreviousPath: (path: string) => set({ previousPath: path }),
                 setIsSidebarExpanded: (val: boolean) => set({ isSidebarExpanded: val }),
                 toggleSidebar: () => set((state) => ({ isSidebarExpanded: !state.isSidebarExpanded })),
                 setIsMobileView: (val: boolean) => set({ isMobileView: val }),

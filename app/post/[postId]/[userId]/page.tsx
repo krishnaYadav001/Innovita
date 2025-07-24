@@ -25,7 +25,7 @@ export default function Post({ params }: PostPageTypes) {
     let { setLikesByPost } = useLikeStore()
     // Get addCommentToStore from comment store
     let { setCommentsByPost, addComment: addCommentToStore } = useCommentStore()
-    let { setIsLoginOpen } = useGeneralStore() // Get setIsLoginOpen
+    let { setIsLoginOpen, previousPath } = useGeneralStore() // Get setIsLoginOpen
     const contextUser = useUser() // Get user context
 
     const router = useRouter()
@@ -116,7 +116,7 @@ export default function Post({ params }: PostPageTypes) {
             >
                 <div className="lg:w-[calc(100%-540px)] h-full relative bg-black dark:bg-black overflow-hidden"> {/* Keep overflow-hidden here for video section if needed */}
                     <Link
-                        href={`/profile/${params?.userId}`}
+                        href={previousPath || `/profile/${params?.userId}`}
                         className="absolute text-white z-20 m-5 rounded-full bg-gray-700 p-1.5 hover:bg-gray-800"
                     >
                         <AiOutlineClose size="27"/>
@@ -140,8 +140,8 @@ export default function Post({ params }: PostPageTypes) {
 
                     <img
                         className="absolute z-20 top-[18px] left-[70px] rounded-full lg:mx-0 mx-auto"
-                        width="45"
-                        src="/images/ii.png"
+                        width="55"
+                        src="/innovita/ii.png"
                     />
 
                     <ClientOnly>

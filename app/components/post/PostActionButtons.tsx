@@ -1,6 +1,7 @@
-import { FaShare, FaCommentDots } from "react-icons/fa"
+import { FaShare, FaCommentDots, FaBookmark } from "react-icons/fa"
 import dynamic from 'next/dynamic'
 import Tooltip from "../Tooltip"
+import { useSavedStore } from "@/app/stores/saved"
 
 // Dynamically import RichTextPreviewButton with no SSR
 const RichTextPreviewButton = dynamic(() => import("../RichTextPreviewButton"), {
@@ -48,13 +49,16 @@ export default function PostActionButtons({ post, layout = 'vertical' }: PostAct
     const [isSaving, setIsSaving] = useState<boolean>(false)
     const [richTextContent, setRichTextContent] = useState<string | undefined>(undefined)
     const [shareCount, setShareCount] = useState<number>(0)
+    const { savedPosts, addSavedPost, removeSavedPost } = useSavedStore()
+    const [isSaved, setIsSaved] = useState<boolean>(false)
 
     useEffect(() => {
         getAllLikesByPost()
         getAllCommentsByPost()
         fetchRichTextContent()
         fetchShareCount()
-    }, [post])
+        checkIfSaved()
+    }, [post, savedPosts])
 
     // Add an effect to refresh share count when localStorage changes
     useEffect(() => {
@@ -103,6 +107,7 @@ export default function PostActionButtons({ post, layout = 'vertical' }: PostAct
         setHasClickedLike(true)
         await useCreateLike(contextUser.user.id, post.id)
         await getAllLikesByPost()
+        addSavedPost(post)
         // No need to call hasUserLikedPost here, useEffect handles it
         setHasClickedLike(false)
     }
@@ -111,6 +116,7 @@ export default function PostActionButtons({ post, layout = 'vertical' }: PostAct
         setHasClickedLike(true)
         await useDeleteLike(id)
         await getAllLikesByPost()
+        removeSavedPost(post.id)
         // No need to call hasUserLikedPost here, useEffect handles it
         setHasClickedLike(false)
     }
@@ -189,6 +195,31 @@ export default function PostActionButtons({ post, layout = 'vertical' }: PostAct
             alert('Error saving content')
         }
     };
+
+    const checkIfSaved = () => {
+        const found = savedPosts.find(p => p.id === post.id)
+        if (found) {
+            setIsSaved(true)
+        } else {
+            setIsSaved(false)
+        }
+    }
+
+    const handleSavePost = () => {
+        if (!contextUser?.user?.id) {
+            setIsLoginOpen(true)
+            return
+        }
+        addSavedPost(post)
+    }
+
+    const handleRemoveSavedPost = () => {
+        if (!contextUser?.user?.id) {
+            setIsLoginOpen(true)
+            return
+        }
+        removeSavedPost(post.id)
+    }
 
     return (
         <>

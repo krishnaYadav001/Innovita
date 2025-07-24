@@ -1,9 +1,8 @@
 "use client"
 
-import { AiOutlineHome } from "react-icons/ai"
+import { AiOutlineHome, AiOutlineShopping, AiOutlineBook } from "react-icons/ai"
 import { RiGroupLine } from "react-icons/ri";
 import { BsCameraVideo } from "react-icons/bs";
-import { FaShoppingBag } from "react-icons/fa"; // Changed from BsCart3 to FaShoppingBag
 import { MenuItemTypes } from "@/app/types";
 import { useGeneralStore } from "@/app/stores/general";
 
@@ -18,7 +17,8 @@ export default function MenuItem({ iconString, colorString, colorClass, sizeStri
         if (iconString == 'For You') return <AiOutlineHome size={iconSize} className={colorClass} color={!colorClass ? colorString : undefined} />
         if (iconString == 'Following' || iconString == 'Connection') return <RiGroupLine size={iconSize} className={colorClass} color={!colorClass ? colorString : undefined} />
         if (iconString == 'LIVE') return <BsCameraVideo size={iconSize} className={colorClass} color={!colorClass ? colorString : undefined} />;
-        if (iconString == 'Shop') return <FaShoppingBag size={iconSize} className={colorClass} color={!colorClass ? colorString : undefined} />; // Changed to shopping bag icon
+        if (iconString == 'Shop') return <AiOutlineShopping size={iconSize} className={colorClass} color={!colorClass ? colorString : undefined} />;
+        if (iconString == 'Saved') return <AiOutlineBook size={iconSize} className={colorClass} color={!colorClass ? colorString : undefined} />;
     };
 
     return (
