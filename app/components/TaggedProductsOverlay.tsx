@@ -36,10 +36,10 @@ export default function TaggedProductsOverlay({ products, onClose }: TaggedProdu
               className="flex items-center space-x-3 p-2 border rounded-md hover:bg-gray-100 transition duration-150 ease-in-out"
             >
               <img
-                src={product.image_url || '/images/ii.png'} // Updated Fallback image
+                src={product.image_url || '/innovita/ii.png'} // Updated Fallback image
                 alt={product.name}
                 className="w-10 h-10 object-cover rounded flex-shrink-0"
-                onError={(e) => { (e.target as HTMLImageElement).src = '/images/ii.png'; }} // Updated Handle broken image links
+                onError={(e) => { (e.target as HTMLImageElement).src = '/innovita/ii.png'; }} // Updated Handle broken image links
               />
               <div className="flex-1 min-w-0"> {/* Added min-w-0 for text truncation */}
                 <p className="text-sm font-medium truncate">{product.name}</p> {/* Added truncate */}

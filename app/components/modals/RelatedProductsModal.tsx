@@ -104,14 +104,14 @@ export default function RelatedProductsModal({ isOpen, onClose, primaryProductId
                       src={useCreateBucketUrl(product.imageId)}
                       alt={product.name}
                       className="w-full h-full object-cover"
-                      onError={(e) => { (e.target as HTMLImageElement).src = '/images/ii.png'; }}
+                      onError={(e) => { (e.target as HTMLImageElement).src = '/innovita/ii.png'; }}
                     />
                   ) : (
                     <img
-                      src={product.image_url || '/images/ii.png'}
+                      src={product.image_url || '/innovita/ii.png'}
                       alt={product.name}
                       className="w-full h-full object-cover"
-                      onError={(e) => { (e.target as HTMLImageElement).src = '/images/ii.png'; }}
+                      onError={(e) => { (e.target as HTMLImageElement).src = '/innovita/ii.png'; }}
                     />
                   )}
                 </div>

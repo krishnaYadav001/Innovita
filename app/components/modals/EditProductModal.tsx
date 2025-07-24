@@ -19,7 +19,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ product, onClose, o
     const [url, setUrl] = useState(product.product_url);
     const [imageFile, setImageFile] = useState<File | null>(null); // For uploading a new image
     // Use useCreateBucketUrl for initial display if imageId exists
-    const initialImageUrl = product.imageId ? useCreateBucketUrl(product.imageId) : '/images/ii.png'; // Fallback image
+    const initialImageUrl = product.imageId ? useCreateBucketUrl(product.imageId) : '/innovita/ii.png'; // Fallback image
     const [imageDisplay, setImageDisplay] = useState<string>(initialImageUrl); // Show current image initially
     const [formError, setFormError] = useState<string | null>(null);
 

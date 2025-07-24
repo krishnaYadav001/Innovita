@@ -82,7 +82,7 @@ export default function TopNav() {
                             <Link href="/" className={`${!isMobileView ? 'ml-14' : ''}`}>
                                 <img
                                     className={`${isMobileView ? 'min-w-[90px] w-[90px]' : 'min-w-[115px] w-[115px]'}`}
-                                    src="/images/iii.png"
+                                    src="/innovita/iii.png"
                                     alt="Innovita Logo"
                                 />
                             </Link>

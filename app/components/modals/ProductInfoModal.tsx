@@ -226,12 +226,12 @@ const ProductInfoModal: React.FC<ProductInfoModalProps> = ({
                                             className="w-full h-full object-contain p-3"
                                             onError={(e) => {
                                                 // Fallback to default image on error
-                                                e.currentTarget.src = '/images/ii.png';
+                                                e.currentTarget.src = '/innovita/ii.png';
                                             }}
                                         />
                                     ) : (
                                         <img
-                                            src="/images/ii.png"
+                                            src="/innovita/ii.png"
                                             alt="Default product image"
                                             className="w-full h-full object-contain p-3"
                                         />

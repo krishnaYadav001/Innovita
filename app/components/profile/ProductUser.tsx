@@ -15,10 +15,10 @@ const ProductUser: React.FC<ProductUserProps> = ({ product }) => {
       <div className="group border border-gray-200 dark:border-gray-800 rounded-lg flex flex-col items-center shadow-sm hover:shadow-lg transition-all duration-300 bg-white dark:bg-gray-900 overflow-hidden transform hover:-translate-y-1 h-full">
         <div className="w-full aspect-square overflow-hidden">
           <img
-            src={product.imageId ? useCreateBucketUrl(product.imageId) : '/images/ii.png'}
+            src={product.imageId ? useCreateBucketUrl(product.imageId) : '/innovita/ii.png'}
             alt={product.name}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-            onError={(e) => { (e.target as HTMLImageElement).src = '/images/ii.png'; }}
+            onError={(e) => { (e.target as HTMLImageElement).src = '/innovita/ii.png'; }}
           />
         </div>
         <div className="flex-grow w-full flex flex-col items-center text-center p-4">

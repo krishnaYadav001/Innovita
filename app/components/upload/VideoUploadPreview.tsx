@@ -107,7 +107,7 @@ const VideoUploadPreview: React.FC<VideoUploadPreviewProps> = ({
                     <img
                         className="absolute right-4 bottom-6 z-20"
                         width="90"
-                        src="/images/ii.png"
+                        src="/innovita/ii.png"
                         alt="Innovita logo overlay"
                     />
                     <video

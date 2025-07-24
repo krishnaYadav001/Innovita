@@ -75,7 +75,7 @@ const PostVideo: React.FC<PostVideoProps> = ({ post, isCurrentUserPostCreator, o
             />
             <img
                 className="absolute right-2 bottom-10 max-w-[70px] sm:max-w-[90px] h-auto object-contain"
-                src="/images/ii.png"
+                src="/innovita/ii.png"
                 alt="Logo overlay"
             />
 
